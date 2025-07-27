@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { Menu } from 'lucide-react';
+
 import {
     Sheet,
     SheetContent,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import { toast, Toaster } from "sonner";
 
 export default function AppLayout({ children }) {
-    const { auth } = usePage().props;
-    console.log('AppLayout loaded');
+    const { auth, flash } = usePage().props;
 
+    useEffect(() => {
+        if (flash?.success) {
+            toast(flash.success);
+        }
+
+        if (flash?.error) {
+            toast(flash.error);
+        }
+    }, [flash]);
 
     const menuItems = [
         { label: 'Dashboard', href: '/dashboard' },
@@ -22,7 +32,7 @@ export default function AppLayout({ children }) {
 
     return (
         <>
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen bg-white">
                 {/* Sidebar */}
                 <aside className="hidden md:block w-64 bg-white border-r">
                     <div className="h-16 flex items-center justify-center border-b font-bold text-lg">
@@ -68,11 +78,23 @@ export default function AppLayout({ children }) {
 
                 {/* Main Content */}
                 <main className="flex-1 p-6 mt-16 md:mt-0">
-                    <div className="mt-4">
+                    <div className="mt-4 ">
                         {children}
                     </div>
                 </main>
             </div>
+
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    className: 'bg-white text-gray-800 shadow-lg',
+                    style: {
+                        background: '#fff',
+                        color: '#333',
+                    },
+                }}
+                duration={2000}
+            />
         </>
     );
 }
