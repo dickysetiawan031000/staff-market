@@ -19,9 +19,6 @@ Route::get('/', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-//Route::get('/test', function () {
-//    return Inertia::render('Dashboard');
-//});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
@@ -29,7 +26,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 });
 
-Route::resource('items', ItemController::class)->middleware('auth');
+
+Route::middleware(['auth', \Spatie\Permission\Middleware\RoleMiddleware::class . ':admin'])->group(function () {
+    Route::resource('items', ItemController::class);
+});
 
 
 
