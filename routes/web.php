@@ -6,14 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-//Route::get('/', function () {
-//    return Inertia::render('Welcome', [
-//        'canLogin' => Route::has('login'),
-//        'canRegister' => Route::has('register'),
-//        'laravelVersion' => Application::VERSION,
-//        'phpVersion' => PHP_VERSION,
-//    ]);
-//});
 
 Route::get('/', function () {
     return Inertia::render('Dashboard');
@@ -29,8 +21,13 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', \Spatie\Permission\Middleware\RoleMiddleware::class . ':admin'])->group(function () {
     Route::resource('items', ItemController::class);
+    Route::resource('transactions', \App\Http\Controllers\TransactionController::class);
 });
 
+
+//Route::middleware(['auth', \Spatie\Permission\Middleware\RoleMiddleware::class . ':staff'])->group(function () {
+//    Route::resource('transactions', \App\Http\Controllers\TransactionController::class);
+//});
 
 
 Route::middleware('auth')->group(function () {

@@ -27,6 +27,7 @@ export default function AppLayout({ children }) {
         ...(auth.roles.includes('admin') ? [
             { label: 'Items', href: '/items' },
             { label: 'Employees', href: '/employees' },
+            { label: 'Transactions', href: '/transactions' },
         ] : []),
     ];
 

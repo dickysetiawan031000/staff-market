@@ -2,8 +2,8 @@ import React from 'react';
 import { Head, usePage, router, Link } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import AppLayout from "@/Layouts/AppLayout.jsx";
-import Breadcrumbs from "@/Components/Breadcrumbs.jsx";
+import AppLayout from '@/Layouts/AppLayout';
+import Breadcrumbs from '@/Components/Breadcrumbs';
 
 export default function Index() {
     const { items, filters } = usePage().props;
@@ -20,7 +20,7 @@ export default function Index() {
             <Head title="Items" />
             <Breadcrumbs />
 
-            <div className=" max-w-6xl space-y-6">
+            <div className="max-w-6xl space-y-6">
                 {/* Header & Search */}
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold">Items</h1>
@@ -33,13 +33,13 @@ export default function Index() {
                     <Input
                         placeholder="Search item name or code..."
                         defaultValue={filters.search}
-                        onChange={handleSearch}
+                        onChange={jah => handleSearch(jah)}
                         className="w-full sm:max-w-xs"
                     />
                 </div>
 
-                {/* Table */}
-                <div className="overflow-auto rounded-md shadow-sm border">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-auto rounded-md shadow-sm border">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-100">
                         <tr>
@@ -74,7 +74,6 @@ export default function Index() {
                                                 });
                                             }
                                         }}
-
                                     >
                                         Delete
                                     </Button>
@@ -83,6 +82,35 @@ export default function Index() {
                         ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Card List */}
+                <div className="md:hidden space-y-4">
+                    {items.data.map((item, index) => (
+                        <div key={item.id} className="border rounded-md shadow-sm p-4 space-y-1">
+                            <div className="text-sm text-gray-500">#{index + 1}</div>
+                            <div><strong>Code:</strong> {item.item_code}</div>
+                            <div><strong>Name:</strong> {item.name}</div>
+                            <div><strong>Price:</strong> Rp {item.price.toLocaleString()}</div>
+                            <div><strong>Stock:</strong> {item.stock}</div>
+                            <div className="flex gap-2 mt-2">
+                                <Link href={route('items.edit', item.id)}>
+                                    <Button size="sm" variant="outline">Edit</Button>
+                                </Link>
+                                <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => {
+                                        if (confirm('Are you sure you want to delete this item?')) {
+                                            router.delete(route('items.destroy', item.id));
+                                        }
+                                    }}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Pagination */}
