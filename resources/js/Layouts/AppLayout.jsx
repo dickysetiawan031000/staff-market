@@ -20,19 +20,19 @@ export default function AppLayout({ children }) {
     }, [flash]);
 
     const menuItems = [
-        { label: 'Dashboard', href: '/dashboard' },
-        ...(auth.roles.includes('staff') ? [
-            { label: 'Transactions', href: '/transactions' },
-        ] : []),
+        { label: 'Dashboard', href: '/' },
+        { label: 'Transactions', href: '/transactions' },
         ...(auth.roles.includes('admin') ? [
             { label: 'Items', href: '/items' },
-            { label: 'Employees', href: '/employees' },
-            { label: 'Transactions', href: '/transactions' },
+            { label: 'Users', href: '/users' },
         ] : []),
     ];
 
     const renderNavLink = (item) => {
-        const isActive = currentPath.startsWith(item.href);
+        const isActive =
+            item.href === '/'
+                ? currentPath === '/'
+                : currentPath.startsWith(item.href);
 
         return (
             <Link

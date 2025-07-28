@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('employee_id')->unique();
             $table->string('address');
             $table->string('phone_number');
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

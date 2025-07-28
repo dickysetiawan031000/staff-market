@@ -41,13 +41,23 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $user = \App\Models\User::where('email', $this->email)->first();
+
+        if (! $user || ! \Hash::check($this->password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
+
+        if (!$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => 'Your account is inactive. Please contact support.',
+            ]);
+        }
+
+        Auth::login($user, $this->boolean('remember'));
 
         RateLimiter::clear($this->throttleKey());
     }

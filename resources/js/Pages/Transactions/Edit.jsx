@@ -87,6 +87,7 @@ export default function Edit({ page_settings, transaction, transaction_items, it
         <AppLayout>
             <Head title={page_settings.title} />
             <Breadcrumbs />
+
             <div className="max-w-6xl">
                 <HeaderForm title={page_settings.title} subtitle={page_settings.subtitle} />
 
@@ -94,20 +95,18 @@ export default function Edit({ page_settings, transaction, transaction_items, it
                     {itemsState.map((item, index) => {
                         const info = getItemInfo(item.item_id);
                         return (
-                            <div key={item.id} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                            <div key={item.id} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start border p-4 rounded-md">
                                 <div>
-                                    <Label>Item</Label>
-                                    <div className="bg-gray-100 p-2 rounded">
-                                        {info?.name || '-'}<br />
-                                        <span className="text-sm text-gray-600">
-                                            Price at Transaction: Rp {item.price_at_transaction.toLocaleString()}<br />
-                                            Current Price: Rp {info?.price?.toLocaleString() || '0'}<br />
-                                            Stock: {info?.stock ?? '-'}
-                                        </span>
+                                    <Label className="block mb-1">Item</Label>
+                                    <div className="bg-gray-100 p-3 rounded text-sm space-y-1">
+                                        <div className="font-medium">{info?.name || '-'}</div>
+                                        <div>Price at Transaction: <strong>Rp {item.price_at_transaction?.toLocaleString() || '-'}</strong></div>
+                                        <div>Current Price: Rp {info?.price?.toLocaleString() || '0'}</div>
+                                        <div>Stock: {info?.stock ?? '-'}</div>
                                     </div>
                                 </div>
                                 <div>
-                                    <Label>Quantity</Label>
+                                    <Label className="block mb-1">Quantity</Label>
                                     <Input
                                         type="number"
                                         min={1}
@@ -163,9 +162,9 @@ export default function Edit({ page_settings, transaction, transaction_items, it
                     )}
 
                     {/* Total Price Summary */}
-                    <div className="text-left font-semibold text-lg space-y-2">
-                        <div>Total Price at Transaction: Rp {transaction.total_price.toLocaleString()}</div>
-                        <div className="border-2 border-gray-800 rounded-md px-4 py-2 font-bold">
+                    <div className="text-left font-semibold text-base sm:text-lg space-y-2">
+                        <div>Total Price at Transaction: <strong>Rp {transaction.total_price.toLocaleString()}</strong></div>
+                        <div className="border-2 border-gray-800 rounded-md px-4 py-2 font-bold text-gray-900">
                             Total Price Now: Rp {totalPriceNow.toLocaleString()}
                         </div>
                     </div>

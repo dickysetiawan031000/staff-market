@@ -7,7 +7,8 @@ import AppLayout from '@/Layouts/AppLayout';
 import Breadcrumbs from '@/Components/Breadcrumbs';
 
 export default function Index() {
-    const { transactions, filters, users } = usePage().props;
+    const { transactions, filters, users, auth } = usePage().props;
+
 
     const handleFilter = (name, value) => {
         router.get(route('transactions.index'), {
@@ -118,20 +119,25 @@ export default function Index() {
                                     <Link href={route('transactions.show', tx.id)}>
                                         <Button size="sm" variant="outline">View</Button>
                                     </Link>
-                                    <Link href={route('transactions.edit', tx.id)}>
-                                        <Button size="sm" variant="secondary">Edit</Button>
-                                    </Link>
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => {
-                                            if (confirm('Are you sure?')) {
-                                                router.delete(route('transactions.destroy', tx.id));
-                                            }
-                                        }}
-                                    >
-                                        Delete
-                                    </Button>
+
+                                    {auth.roles.includes('admin') && (
+                                        <>
+                                            <Link href={route('transactions.edit', tx.id)}>
+                                                <Button size="sm" variant="secondary">Edit</Button>
+                                            </Link>
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={() => {
+                                                    if (confirm('Are you sure?')) {
+                                                        router.delete(route('transactions.destroy', tx.id));
+                                                    }
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </>
+                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -142,27 +148,37 @@ export default function Index() {
                 {/* Card - Mobile */}
                 <div className="md:hidden space-y-4">
                     {transactions.data.map((tx, index) => (
-                        <div key={tx.id} className="border rounded-lg shadow-sm p-4 space-y-1">
-                            <div className="text-sm text-gray-500">#{index + 1}</div>
+                        <div key={tx.id} className="border rounded-lg shadow-sm p-4 space-y-2 text-sm">
+                            <div className="text-gray-500">#{index + 1}</div>
                             <div><strong>User:</strong> {tx.user?.name || '-'}</div>
-                            <div><strong>Tanggal:</strong> {new Date(tx.created_at).toLocaleDateString()}</div>
-                            <div><strong>Total:</strong> Rp {tx.total_price.toLocaleString()}</div>
-                            <div><strong>Tipe Bayar:</strong> {tx.status === 'paid' ? 'Lunas' : 'Cicil'}</div>
-                            <div className="flex gap-2 mt-2">
+                            <div><strong>Date:</strong> {new Date(tx.created_at).toLocaleDateString()}</div>
+                            <div><strong>Total Amount:</strong> Rp {tx.total_price.toLocaleString()}</div>
+                            <div><strong>Payment Type:</strong> {tx.status === 'paid' ? 'Paid' : 'Installment'}</div>
+                            <div><strong>Total Installment:</strong> {tx.total_installment || '-'}</div>
+
+                            <div className="flex flex-wrap gap-2 pt-2">
                                 <Link href={route('transactions.show', tx.id)}>
                                     <Button size="sm" variant="outline">View</Button>
                                 </Link>
-                                <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => {
-                                        if (confirm('Are you sure?')) {
-                                            router.delete(route('transactions.destroy', tx.id));
-                                        }
-                                    }}
-                                >
-                                    Delete
-                                </Button>
+
+                                {auth.roles.includes('admin') && (
+                                    <>
+                                        <Link href={route('transactions.edit', tx.id)}>
+                                            <Button size="sm" variant="secondary">Edit</Button>
+                                        </Link>
+                                        <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            onClick={() => {
+                                                if (confirm('Are you sure?')) {
+                                                    router.delete(route('transactions.destroy', tx.id));
+                                                }
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))}

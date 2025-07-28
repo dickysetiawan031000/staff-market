@@ -14,13 +14,19 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $query = Transaction::with('user');
+
+        // Jika bukan admin, batasi hanya transaksi miliknya
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
+        }
 
         if ($request->filled('date')) {
             $query->whereDate('created_at', $request->date);
         }
 
-        if ($request->filled('user_id')) {
+        if ($request->filled('user_id') && $user->hasRole('admin')) {
             $query->where('user_id', $request->user_id);
         }
 
@@ -33,12 +39,14 @@ class TransactionController extends Controller
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
             'filters' => $request->only(['date', 'user_id', 'status']),
-            'users' => User::select('id', 'name', 'employee_id')
-                ->whereHas('roles', function ($query) {
-                    $query->where('name', 'staff'); // ambil user yang role-nya staff
-                })
-                ->whereHas('transactions')
-                ->get(),
+            'users' => $user->hasRole('admin')
+                ? User::select('id', 'name', 'employee_id')
+                    ->whereHas('roles', function ($query) {
+                        $query->where('name', 'staff');
+                    })
+                    ->whereHas('transactions')
+                    ->get()
+                : [],
         ]);
     }
 
@@ -191,5 +199,23 @@ class TransactionController extends Controller
             return back()->with('error', 'Failed to update transaction: ' . $e->getMessage());
         }
     }
+
+    public function show(Transaction $transaction)
+    {
+        $user = auth()->user();
+
+        if ($user->hasRole('staff') && $transaction->user_id !== $user->id) {
+            abort(403, 'You are not authorized to view this transaction.');
+        }
+
+        $transaction->load(['user']);
+        $transaction_items = $transaction->transactionItems()->with('item')->get();
+
+        return inertia('Transactions/View', [
+            'transaction' => $transaction,
+            'transaction_items' => $transaction_items,
+        ]);
+    }
+
 
 }
