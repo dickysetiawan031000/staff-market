@@ -40,6 +40,7 @@ Aplikasi ini dirancang sebagai aplikasi monolith Laravel dengan frontend React y
 | UI        | Blade + Tailwind CSS    |
 | PWA       | vite-plugin-pwa (React) |
 | Auth      | Laravel Breeze          |
+| Role/Permission | Spatie Laravel Permission |
 
 ---
 
