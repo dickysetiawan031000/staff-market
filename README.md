@@ -97,7 +97,7 @@ Akses di `http://localhost:8000`
 
 ## 👥 Akun Login
 
-Silakan buat akun melalui halaman register, atau gunakan data yang ada dari seeder (jika tersedia).
+Silakan buat akun melalui halaman register, atau gunakan data yang ada dari seeder.
 
 🔐 Admin
 
