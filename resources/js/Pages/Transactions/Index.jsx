@@ -36,9 +36,11 @@ export default function Index() {
                 {/* Header */}
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold">Transactions</h1>
-                    <Link href={route('transactions.create')}>
-                        <Button>Add Transaction</Button>
-                    </Link>
+                    {auth.roles.includes('admin') && (
+                        <Link href={route('transactions.create')}>
+                            <Button>Add Transaction</Button>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Filter Form */}

@@ -25,7 +25,7 @@ export default function View() {
                     <div><strong>User:</strong> {transaction.user?.name || '-'}</div>
                     <div><strong>Date:</strong> {new Date(transaction.created_at).toLocaleDateString()}</div>
                     <div><strong>Status:</strong> {transaction.status === 'paid' ? 'Paid' : 'Installment'}</div>
-                    <div><strong>Total Installment:</strong> Rp {transaction.total_installment.toLocaleString() || '-'}</div>
+                    <div><strong>Total Installment:</strong> Rp {transaction.total_installment?.toLocaleString() || '-'}</div>
                     <div><strong>Total Price:</strong> Rp {transaction.total_price.toLocaleString()}</div>
                 </div>
 

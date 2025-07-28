@@ -53,6 +53,10 @@ class TransactionController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         return Inertia::render('Transactions/Create', [
             'items' => Item::all(),
             'users' => User::role('staff')->get(), // ambil user yang role-nya staff
@@ -67,6 +71,10 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validate([
             'user_id' => ['required', 'exists:users,id'],
             'status' => ['required', 'in:paid,installment'],
@@ -114,7 +122,10 @@ class TransactionController extends Controller
 
     public function edit(Transaction $transaction)
     {
-        // Load relasi item dari setiap transaction_item
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $transaction->load('transactionItems.item');
 
         $items = Item::get();
@@ -146,6 +157,9 @@ class TransactionController extends Controller
 
     public function update(Request $request, Transaction $transaction)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
 
         $validated = $request->validate([
             'items' => ['required', 'array'],
@@ -215,6 +229,17 @@ class TransactionController extends Controller
             'transaction' => $transaction,
             'transaction_items' => $transaction_items,
         ]);
+    }
+
+    public function destroy(Transaction $transaction)
+    {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized');
+        }
+        $user = auth()->user();
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')->with('success', 'Transaction deleted successfully.');
     }
 
 
